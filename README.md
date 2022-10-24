@@ -9,12 +9,13 @@ jeu multijoueurs en réseau.
 
 ## Création des différentes classes
 
-On pourra créer les classes : 'Game', 'Players', 'Board',
-'Piece' et 'Moves'.
+On pourra créer les classes : 'Game', 'Player', 'Board',
+et 'Piece'.
 
 La classe 'Piece' aura comme attribut COLOR qui prendra
 la valeur BLACK ou WHITE pour désigner la couleur de la
-pièce. Elle aura également plusieurs sous-classes pour
+pièce ainsi qu'un attribut pour désigner sa position sur
+le board. Elle aura également plusieurs sous-classes pour
 les pièces différentes. La sous-classe 'Rook' aura un
 attribut en plus pour prendre en compte les roques.
 
@@ -28,9 +29,14 @@ pièces du joueur, un attribut Pieces qui sera la liste
 des pièces de ce joueur. Il aura deux sous-classes
 HumanPlayer et ComputerPlayer.
 
+La classe 'Game' se chargera de commencer une partie.
+
 ## Création des méthodes
 
 Après avoir créé les différentes classes, on peut
 introduire les méthodes qui permettront de modéliser
 le jeu.
 
+La classe 'Piece' aura une méthode 'Moves' prenant
+en argument 'Board' et renvoyant la liste des positions
+sur le board où cette pièce peut atterrir. 
