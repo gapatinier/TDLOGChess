@@ -6,7 +6,16 @@ class Piece:
         self._col = j
         self._alive = 1
 
+    def alive(self):
+        return self._alive
+
+    def die(self, player):
+        for piece in player.pieces:
+            if self.cords == piece.cords:
+                piece.alive = 0
+
     def move(self, board, i, j, game):
+        player2 = game.players[1 - board.turn]
         if [i, j] in self.defend(board):
             board.board[self._row][self._col] = Pawn(None, self._row, self._col)
             eaten_piece = board.board[i][j]
@@ -14,6 +23,7 @@ class Piece:
             if board.check_legal_move(game):
                 self._row = i
                 self._col = j
+                eaten_piece.die(player2)
                 return True
             else:
                 board.board[self._row][self._col] = self
@@ -190,18 +200,18 @@ class Board:
     def board(self):
         return self._board
 
+    def turn(self):
+        return self._turn
+
     def check_legal_move(self, game):
-        if self._turn == 0:
-            player1 = game.player1
-            player2 = game.player2
-        else:
-            player1 = game.player2
-            player2 = game.player1
+
+        player1 = game.players[self._turn]
+        player2 = game.players[1 - self._turn]
 
         king_cords = player1.pieces[7].coords
 
         for piece in player2.pieces:
-            if king_cords in piece.defend(self):
+            if king_cords in piece.defend(self) and piece.alive:
                 return False
 
         return True
@@ -238,11 +248,7 @@ class Game:
 
     def __init__(self):
         self._board = Board(0)
-        self._player1 = Player
-        self._player2 = Player
+        self._players = [Player, Player]
 
-    def player1(self):
-        return self._player1
-
-    def player2(self):
-        return self._player2
+    def players(self):
+        return self._players
