@@ -5,6 +5,10 @@ class Piece:
         self._row = i
         self._col = j
         self._alive = 1
+        self._type = ""
+
+    def color(self):
+        return self._color
 
     def alive(self):
         return self._alive
@@ -14,20 +18,47 @@ class Piece:
             if self.cords == piece.cords:
                 piece.alive = 0
 
+    def defend(self, board):
+        pass
+
     def move(self, board, i, j, game):
         player2 = game.players[1 - board.turn]
-        if [i, j] in self.defend(board):
-            board.board[self._row][self._col] = Pawn(None, self._row, self._col)
-            eaten_piece = board.board[i][j]
-            board.board[i][j] = self
-            if board.check_legal_move(game):
+        if self._type != "pawn":
+            if [i, j] in self.defend(board):
+                board.board[self._row][self._col] = Pawn(None, self._row, self._col)
+                eaten_piece = board.board[i][j]
+                board.board[i][j] = self
+                if board.check_legal_move(game):
+                    self._row = i
+                    self._col = j
+                    eaten_piece.die(player2)
+                    return True
+                else:
+                    board.board[self._row][self._col] = self
+                    board.board[i][j] = eaten_piece
+            return False
+        else:
+            if [i, j] in self.defend(board) and board.board[i][j].color == 1 - self._color:
+                board.board[self._row][self._col] = Pawn(None, self._row, self._col)
+                eaten_piece = board.board[i][j]
+                board.board[i][j] = self
                 self._row = i
                 self._col = j
                 eaten_piece.die(player2)
                 return True
             else:
-                board.board[self._row][self._col] = self
-                board.board[i][j] = eaten_piece
+                if self.color == 0:
+                    k = 1
+                else:
+                    k = -1
+                if [i, j] == [self._row + k, self._col] and board.board[self._row + k][self._col].color is None:
+                    board.board[self._row][self._col] = Pawn(None, self._row, self._col)
+                    board.board[i][j] = self
+                    return True
+                elif [i, j] == [self._row + 2*k, self._col] and board.board[self._row + 2*k][self._col].color is None:
+                    board.board[self._row][self._col] = Pawn(None, self._row, self._col)
+                    board.board[i][j] = self
+                    return True
             return False
 
     def cords(self):
@@ -35,6 +66,12 @@ class Piece:
 
 
 class King(Piece):
+
+    type = "king"
+
+    def __init__(self, color, i, j):
+        Piece.__init__(self, color, i, j)
+        self._moved = 0
 
     def defend(self, board):
         krange = [-1, 0, 1]
@@ -51,79 +88,113 @@ class King(Piece):
 
 class Queen(Piece):
 
+    type = "queen"
+
     def defend(self, board):
         defend = []
         i = 1
         while self._row + i < 8 and self._col + i < 8 and board.board[self._row + i][self._col].color is None:
             defend += [self._row + i, self._col + i]
             i += 1
+        if self._row + i < 8 and self._col + i < 8 and board.board[self._row + i][self._col].color == 1 - self._color:
+            defend += [self._row + i, self._col + i]
 
         i = 1
         while self._row - i > -1 and self._col - i > -1 and board.board[self._row - i][self._col].color is None:
             defend += [self._row - i, self._col - i]
             i += 1
+        if self._row - i > -1 and self._col - i > -1 and board.board[self._row - i][self._col].color == 1 - self._color:
+            defend += [self._row - i, self._col - i]
 
         i = 1
         while self._row - i > -1 and self._col + i < 8 and board.board[self._row][self._col + i].color is None:
             defend += [self._row - i, self._col + i]
             i += 1
+        if self._row - i > -1 and self._col + i < 8 and board.board[self._row][self._col + i].color == 1 - self._color:
+            defend += [self._row - i, self._col + i]
 
         i = 1
         while self._row + i < 8 and self._col - i > -1 and board.board[self._row][self._col - i].color is None:
             defend += [self._row + i, self._col - i]
             i += 1
+        if self._row + i < 8 and self._col - i > -1 and board.board[self._row][self._col - i].color == 1 - self._color:
+            defend += [self._row + i, self._col - i]
 
         i = 1
         while self._row + i < 8 and board.board[self._row + i][self._col].color is None:
             defend += [self._row + i, self._col]
             i += 1
+        if self._row + i < 8 and board.board[self._row + i][self._col].color == 1 - self._color:
+            defend += [self._row + i, self._col]
 
         i = 1
         while self._row - i > -1 and board.board[self._row - i][self._col].color is None:
             defend += [self._row - i, self._col]
             i += 1
+        if self._row - i > -1 and board.board[self._row - i][self._col].color == 1 - self._color:
+            defend += [self._row - i, self._col]
 
         i = 1
         while self._col + i < 8 and board.board[self._row][self._col + i].color is None:
             defend += [self._row, self._col + i]
             i += 1
+        if self._col + i < 8 and board.board[self._row][self._col + i].color == 1 - self._color:
+            defend += [self._row, self._col + i]
 
         i = 1
         while self._row - i > -1 and board.board[self._row][self._col - i].color is None:
             defend += [self._row, self._col - 1]
             i += 1
+        if self._row - i > -1 and board.board[self._row][self._col - i].color == 1 - self._color:
+            defend += [self._row, self._col - 1]
 
         return defend
 
 
 class Rook(Piece):
 
+    type = "rook"
+
+    def __init__(self, color, i, j):
+        Piece.__init__(self, color, i, j)
+        self._moved = 0
+
     def defend(self, board):
         defend = []
         i = 1
         while self._row + i < 8 and board.board[self._row + i][self._col].color is None:
             defend += [self._row + i, self._col]
             i += 1
+        if self._row + i < 8 and board.board[self._row + i][self._col].color == 1 - self._color:
+            defend += [self._row + i, self._col]
 
         i = 1
         while self._row - i > -1 and board.board[self._row - i][self._col].color is None:
             defend += [self._row - i, self._col]
             i += 1
+        if self._row - i > -1 and board.board[self._row - i][self._col].color == 1 - self._color:
+            defend += [self._row - i, self._col]
 
         i = 1
         while self._col + i < 8 and board.board[self._row][self._col + i].color is None:
             defend += [self._row, self._col + i]
             i += 1
+        if self._col + i < 8 and board.board[self._row][self._col + i].color == 1 - self._color:
+            defend += [self._row, self._col + i]
 
         i = 1
         while self._row - i > -1 and board.board[self._row][self._col - i].color is None:
             defend += [self._row, self._col - 1]
             i += 1
+        if self._row - i > -1 and board.board[self._row][self._col - i].color == 1 - self._color:
+            defend += [self._row, self._col - 1]
 
         return defend
 
 
 class Bishop(Piece):
+
+    type = "bishop"
 
     def defend(self, board):
         defend = []
@@ -131,28 +202,38 @@ class Bishop(Piece):
         while self._row + i < 8 and self._col + i < 8 and board.board[self._row + i][self._col].color is None:
             defend += [self._row + i, self._col + i]
             i += 1
+        if self._row + i < 8 and self._col + i < 8 and board.board[self._row + i][self._col].color == 1 - self._color:
+            defend += [self._row + i, self._col + i]
 
         i = 1
         while self._row - i > -1 and self._col - i > -1 and board.board[self._row - i][self._col].color is None:
             defend += [self._row - i, self._col - i]
             i += 1
+        if self._row - i > -1 and self._col - i > -1 and board.board[self._row - i][self._col].color == 1 - self._color:
+            defend += [self._row - i, self._col - i]
 
         i = 1
         while self._row - i > -1 and self._col + i < 8 and board.board[self._row][self._col + i].color is None:
             defend += [self._row - i, self._col + i]
             i += 1
+        if self._row - i > -1 and self._col + i < 8 and board.board[self._row][self._col + i].color == 1 - self._color:
+            defend += [self._row - i, self._col + i]
 
         i = 1
         while self._row + i < 8 and self._col - i > -1 and board.board[self._row][self._col - i].color is None:
             defend += [self._row + i, self._col - i]
             i += 1
+        if self._row + i < 8 and self._col - i > -1 and board.board[self._row][self._col - i].color == 1 - self._color:
+            defend += [self._row + i, self._col - i]
 
         return defend
 
 
 class Knight(Piece):
 
-    def defend(self):
+    type = "knight"
+
+    def defend(self, board):
         krange = [-2, -1, 1, 2]
         defend = []
         for i in krange:
@@ -166,6 +247,8 @@ class Knight(Piece):
 
 
 class Pawn(Piece):
+
+    type = "pawn"
 
     def defend(self, board):
         defend = []
@@ -215,6 +298,10 @@ class Board:
                 return False
 
         return True
+
+    def next_turn(self):
+        self._turn = 1 - self._turn
+        return
 
 
 class Player:
