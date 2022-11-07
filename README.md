@@ -40,3 +40,9 @@ le jeu.
 La classe 'Piece' aura une méthode 'Moves' prenant
 en argument 'Board' et renvoyant la liste des positions
 sur le board où cette pièce peut atterrir. 
+
+\begin{figure}[0.5]
+\includegraphics[]{uml_chess.drawio}
+\end{figure}
+
+![alt text](https://github.com/[zaidang98]/[repostdlog]/blob/[uml]/chess_uml_vector.svg?raw=true)

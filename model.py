@@ -1,4 +1,5 @@
 import pygame
+from random import randint
 
 
 class Piece:
@@ -264,7 +265,7 @@ class Game:
     - a list of 2 ints to indicate wether an en-passant is possible and on which tiles
     """
 
-    def __init__(self):
+    def __init__(self, player0, player1):
         self._turn = 0
         self._board = [[Piece(None) for i in range(8)] for j in range(8)]
         color = 1
@@ -277,7 +278,7 @@ class Game:
                           King(color), Bishop(color), Knight(color), Rook(color)]
         self._board[6] = [Pawn(color), Pawn(color), Pawn(color), Pawn(color),
                           Pawn(color), Pawn(color), Pawn(color), Pawn(color)]
-        self._players = [Player(0), Player(1)]
+        self._players = [player0, player1]
         self._en_passant = [0, -1]
 
     def turn(self):
@@ -489,6 +490,7 @@ class Player:
                         [4, 5 * (1 - color) + 1], [5, 5 * (1 - color) + 1], [6, 5 * (1 - color) + 1],
                         [7, 5 * (1 - color) + 1]]
         self._state = 0
+        self._type = 0
 
     def color(self):
         return self._color
@@ -526,13 +528,26 @@ class Player:
                 pieces[k] = piece
         self.update_pieces(pieces)
 
+    def type(self):
+        return self._type
+
 
 class HumanPlayer(Player):
     pass
 
 
 class ComputerPlayer(Player):
-    pass
+
+    def __init__(self, color):
+        Player(color)
+        self._type = 1
+    def play_turn(self, game):
+        k = randint(0,15)
+        while self._pieces[k].color() is None:
+            k = randint(0,15)
+        legal_moves = game.legal_moves(self._coords[k][0], self._coords[k][1])
+        l = randint(1,len(legal_moves))-1
+        return legal_moves[l] + self._coords[k]
 
 
 # Colors
