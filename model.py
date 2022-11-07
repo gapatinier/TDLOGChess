@@ -4,7 +4,7 @@ import pygame
 class Piece:
     """
     A piece is defined by :
-    - its color (0 for white, 1 for black, None if it belongs to noone or is dead)
+    - its color (0 for white, 1 for black, None if it belongs to no one or is dead)
     - its type (str)
     - its black and white images for display
     - wether or not it has moved for castling rights and for pawns
