@@ -1,4 +1,5 @@
 from model import *
+import config
 
 # Initialisation
 pygame.init()
@@ -9,7 +10,7 @@ Screen = pygame.display.set_mode((500, 500))
 
 # Title and Icon
 pygame.display.set_caption("Chess")
-icon = pygame.image.load("strategy.png")
+icon = pygame.image.load(config.LOGO)
 pygame.display.set_icon(icon)
 
 

@@ -1,5 +1,6 @@
 import pygame
 import random
+import config
 
 
 class Piece:
@@ -55,7 +56,7 @@ class King(Piece):
 
     def __init__(self, color):
         Piece.__init__(self, color)
-        self._images = [pygame.image.load("wking.png"), pygame.image.load("bking.png")]
+        self._images = [pygame.image.load(config.WHITE_KING), pygame.image.load(config.BLACK_KING)]
         self._type = "king"
 
     def defend(self, board, i0, j0):
@@ -75,7 +76,7 @@ class Queen(Piece):
 
     def __init__(self, color):
         Piece.__init__(self, color)
-        self._images = [pygame.image.load("wqueen.png"), pygame.image.load("bqueen.png")]
+        self._images = [pygame.image.load(config.WHITE_QUEEN), pygame.image.load(config.BLACK_QUEEN)]
         self._type = "queen"
         self._value = 9
 
@@ -144,7 +145,7 @@ class Rook(Piece):
 
     def __init__(self, color):
         Piece.__init__(self, color)
-        self._images = [pygame.image.load("wrook.png"), pygame.image.load("brook.png")]
+        self._images = [pygame.image.load(config.WHITE_ROOK), pygame.image.load(config.BLACK_ROOK)]
         self._type = "rook"
         self._value = 5
 
@@ -185,7 +186,7 @@ class Bishop(Piece):
 
     def __init__(self, color):
         Piece.__init__(self, color)
-        self._images = [pygame.image.load("wbishop.png"), pygame.image.load("bbishop.png")]
+        self._images = [pygame.image.load(config.WHITE_BISHOP), pygame.image.load(config.BLACK_BISHOP)]
         self._type = "bishop"
         self._value = 3
 
@@ -226,7 +227,7 @@ class Knight(Piece):
 
     def __init__(self, color):
         Piece.__init__(self, color)
-        self._images = [pygame.image.load("wknight.png"), pygame.image.load("bknight.png")]
+        self._images = [pygame.image.load(config.WHITE_KNIGHT), pygame.image.load(config.BLACK_KNIGHT)]
         self._type = "knight"
         self._value = 3
 
@@ -247,7 +248,7 @@ class Pawn(Piece):
 
     def __init__(self, color):
         Piece.__init__(self, color)
-        self._images = [pygame.image.load("wpawn.png"), pygame.image.load("bpawn.png")]
+        self._images = [pygame.image.load(config.WHITE_PAWN), pygame.image.load(config.BLACK_PAWN)]
         self._type = "pawn"
         self._value = 1
 
