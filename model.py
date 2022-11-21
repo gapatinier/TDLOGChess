@@ -1,4 +1,5 @@
 import pygame
+import random
 
 
 class Piece:
@@ -15,6 +16,7 @@ class Piece:
         self._type = ""
         self._images = pygame.image
         self._moved = 0
+        self._value = 0
 
     def color(self):
         return self._color
@@ -27,6 +29,9 @@ class Piece:
 
     def moved(self):
         return self._moved
+
+    def value(self):
+        return self._value
 
     def die(self):
         """
@@ -58,7 +63,7 @@ class King(Piece):
         defend = []
         for i in krange:
             for j in krange:
-                if i or j:
+                if i != 0 or j != 0:
                     row = j0 + j
                     col = i0 + i
                     if -1 < row < 8 and -1 < col < 8:
@@ -72,6 +77,7 @@ class Queen(Piece):
         Piece.__init__(self, color)
         self._images = [pygame.image.load("wqueen.png"), pygame.image.load("bqueen.png")]
         self._type = "queen"
+        self._value = 9
 
     def defend(self, board, i0, j0):
         defend = []
@@ -140,6 +146,7 @@ class Rook(Piece):
         Piece.__init__(self, color)
         self._images = [pygame.image.load("wrook.png"), pygame.image.load("brook.png")]
         self._type = "rook"
+        self._value = 5
 
     def defend(self, board, i0, j0):
         defend = []
@@ -180,6 +187,7 @@ class Bishop(Piece):
         Piece.__init__(self, color)
         self._images = [pygame.image.load("wbishop.png"), pygame.image.load("bbishop.png")]
         self._type = "bishop"
+        self._value = 3
 
     def defend(self, board, i0, j0):
         defend = []
@@ -220,6 +228,7 @@ class Knight(Piece):
         Piece.__init__(self, color)
         self._images = [pygame.image.load("wknight.png"), pygame.image.load("bknight.png")]
         self._type = "knight"
+        self._value = 3
 
     def defend(self, board, i0, j0):
         krange = [-2, -1, 1, 2]
@@ -240,6 +249,7 @@ class Pawn(Piece):
         Piece.__init__(self, color)
         self._images = [pygame.image.load("wpawn.png"), pygame.image.load("bpawn.png")]
         self._type = "pawn"
+        self._value = 1
 
     def defend(self, board, i0, j0):
         defend = []
@@ -264,9 +274,9 @@ class Game:
     - a list of 2 ints to indicate wether an en-passant is possible and on which tiles
     """
 
-    def __init__(self):
+    def __init__(self, player0, player1):
         self._turn = 0
-        self._board = [[Piece(None) for i in range(8)] for j in range(8)]
+        self._board = [[Piece(None) for _ in range(8)] for _ in range(8)]
         color = 1
         self._board[0] = [Rook(color), Knight(color), Bishop(color), Queen(color),
                           King(color), Bishop(color), Knight(color), Rook(color)]
@@ -277,7 +287,7 @@ class Game:
                           King(color), Bishop(color), Knight(color), Rook(color)]
         self._board[6] = [Pawn(color), Pawn(color), Pawn(color), Pawn(color),
                           Pawn(color), Pawn(color), Pawn(color), Pawn(color)]
-        self._players = [Player(0), Player(1)]
+        self._players = [player0, player1]
         self._en_passant = [0, -1]
 
     def turn(self):
@@ -308,17 +318,18 @@ class Game:
             for [i, j] in defend:
                 if board[j][i].color() != color:
                     moves.append([i, j])
-        elif board[j0][i0].type() == "pawn":
+        elif board[j0][i0].type() == "pawn" and board[j0][i0].color() is not None:
             for [i, j] in defend:
                 if color is not None and board[j][i].color() == 1 - color:
                     moves.append([i, j])
             k = 2 * color - 1
             if board[j0 + k][i0].color() is None:
                 moves.append([i0, j0 + k])
-                if board[j0 + 2 * k][i0].color() is None and not board[j0][i0].moved():
+                if not board[j0][i0].moved() and board[j0 + 2 * k][i0].color() is None:
                     moves.append([i0, j0 + 2 * k])
-            if self._en_passant[0] and j0 == 3 + 4*color and (i0 == self._en_passant[1] - 1 or i0 == self._en_passant[1] + 1):
-                moves.append([self._en_passant[1], 2 + 5*color])
+            if self._en_passant[0] and j0 == 3 + 4 * color and (
+                    i0 == self._en_passant[1] - 1 or i0 == self._en_passant[1] + 1):
+                moves.append([self._en_passant[1], 2 + 5 * color])
                 self._en_passant[0] += 1
 
         return moves
@@ -375,6 +386,7 @@ class Game:
         Changes the board state and the player attributes when the piece on [i0, j0] moves to [i, j]
         """
         piece = self._board[j0][i0]
+        moved = piece.moved()
         piece.move()
         self.set_board(Pawn(None), i0, j0)
         self.set_board(piece, i, j)
@@ -384,21 +396,21 @@ class Game:
         player2 = self._players[1 - color]
         player2.update_type(i, j, Pawn(None))
         self.update_player(player2, 1 - color)
-        if piece.type() == "pawn" and j*(7-j) == 0:
+        if piece.type() == "pawn" and j * (7 - j) == 0:
             player1.update_type(i, j, Queen(color))
             self.set_board(Queen(color), i, j)
-        if piece.type() == "king" and [i, j] == [1, 7 * (1 - color)]:
+        if piece.type() == "king" and [i, j] == [1, 7 * (1 - color)] and not moved:
             player1.update_piece(0, 7 * (1 - color), 2, 7 * (1 - color))
             self.set_board(Pawn(None), 0, 7 * (1 - color))
             self.set_board(Rook(color), 2, 7 * (1 - color))
-        if piece.type() == "king" and [i, j] == [6, 7 * (1 - color)]:
+        if piece.type() == "king" and [i, j] == [6, 7 * (1 - color)] and not moved:
             player1.update_piece(7, 7 * (1 - color), 5, 7 * (1 - color))
             self.set_board(Pawn(None), 7, 7 * (1 - color))
             self.set_board(Rook(color), 5, 7 * (1 - color))
         self.update_player(player1, color)
         if self._en_passant[0] == 2:
             player2.update_type(self._en_passant[1], 3 + color, Pawn(None))
-            self.update_player(player2, 1-color)
+            self.update_player(player2, 1 - color)
             self.set_board(Pawn(None), self._en_passant[1], 3 + color)
         if piece.type() == "pawn" and abs(j0 - j) == 2:
             self._en_passant = [1, i]
@@ -420,7 +432,6 @@ class Game:
         board = self.board()
         player1 = self.players()[turn]
         player2 = self.players()[1 - turn]
-        [i0, j0] = player1.coords()[7]
         if player1.pieces()[7].moved() + player1.pieces()[0].moved() == 0 and player1.pieces()[0].color() is not None:
             yes = True
             for i in [3, 2, 1]:
@@ -428,7 +439,9 @@ class Game:
                 if yes:
                     king_cords = [i, 7 * (1 - player1.color())]
                     for k in range(16):
-                        if king_cords in player2.pieces()[k].defend(self._board, player2.coords()[k][0], player2.coords()[k][1]) and not player2.pieces()[k].color() is None:
+                        if king_cords in player2.pieces()[k].defend(self._board, player2.coords()[k][0],
+                                                                    player2.coords()[k][1]) and not player2.pieces()[
+                                                                    k].color() is None:
                             yes = False
 
             if yes:
@@ -439,7 +452,6 @@ class Game:
         board = self.board()
         player1 = self.players()[turn]
         player2 = self.players()[1 - turn]
-        [i0, j0] = player1.coords()[7]
         if player1.pieces()[7].moved() + player1.pieces()[1].moved() == 0 and player1.pieces()[1].color() is not None:
             yes = True
             for i in [5, 6]:
@@ -449,7 +461,9 @@ class Game:
                     if yes:
                         king_cords = [i, 7 * (1 - player1.color())]
                         for k in range(16):
-                            if king_cords in player2.pieces()[k].defend(self._board, player2.coords()[k][0], player2.coords()[k][1]) and not player2.pieces()[k].color() is None:
+                            if king_cords in player2.pieces()[k].defend(self._board, player2.coords()[k][0],
+                                                                        player2.coords()[k][1]) and not \
+                                    player2.pieces()[k].color() is None:
                                 yes = False
             if yes:
                 legal_moves.append([6, 7 * (1 - player1.color())])
@@ -489,6 +503,7 @@ class Player:
                         [4, 5 * (1 - color) + 1], [5, 5 * (1 - color) + 1], [6, 5 * (1 - color) + 1],
                         [7, 5 * (1 - color) + 1]]
         self._state = 0
+        self._type = 0
 
     def color(self):
         return self._color
@@ -526,13 +541,64 @@ class Player:
                 pieces[k] = piece
         self.update_pieces(pieces)
 
+    def type(self):
+        return self._type
+
 
 class HumanPlayer(Player):
-    pass
+
+    def __init__(self, color):
+        Player.__init__(self, color)
+        self._type = 0
 
 
 class ComputerPlayer(Player):
-    pass
+
+    def __init__(self, color):
+        Player.__init__(self, color)
+        self._type = 1
+
+    def play_random_move(self, game):
+        k = random.randint(0, 15)
+        legal_moves = game.legal_moves(self._coords[k][0], self._coords[k][1])
+        while self._pieces[k].color() is None or legal_moves == []:
+            k = random.randint(0, 15)
+            legal_moves = game.legal_moves(self._coords[k][0], self._coords[k][1])
+        move = random.sample(legal_moves, 1)[0]
+        return move + self._coords[k]
+
+    def play_smart_move_v1(self, game):
+        smart_moves = []
+        max_val = -20
+        defended_tiles = []
+        player2 = game.players()[1 - self._color]
+        board = game.board()
+        pieces = player2.pieces()
+        coords = player2.coords()
+        for k in range(16):
+            if pieces[k].color() is not None:
+                defended_tiles += pieces[k].defend(board, coords[k][0], coords[k][1])
+
+        for k in range(16):
+            if self._pieces[k].color() is not None:
+                legal_moves = game.legal_moves(self._coords[k][0], self._coords[k][1])
+                for [i, j] in legal_moves:
+                    val = (self._coords[k] in defended_tiles) * self._pieces[k].value()
+                    if board[j][i].color() is not None:
+                        val = val + board[j][i].value()
+                    if [i, j] in defended_tiles:
+                        val = val - self._pieces[k].value()
+                    game.next_turn()
+                    if not game.check_legal_move():
+                        val = val + 1
+                    game.next_turn()
+                    if val > max_val:
+                        max_val = val
+                        smart_moves = [[i, j, k]]
+                    if val == max_val:
+                        smart_moves.append([i, j, k])
+        [i, j, k] = random.sample(smart_moves, 1)[0]
+        return [i, j, self._coords[k][0], self._coords[k][1]]
 
 
 # Colors
@@ -542,6 +608,7 @@ s = pygame.Surface((60, 60))
 s.set_alpha(128)
 s.fill((255, 0, 0))
 [i1, j1] = [0, 0]
+
 
 # Display functions
 
@@ -556,7 +623,6 @@ def highlight(i, j, screen):
 def display_piece(board, i, j, screen):
     """
     Displays a piece on the board using its coordinates and its color
-
     """
     piece = board[j][i]
     screen.fill(Color[1 - (i + j) % 2], (10 + 60 * i, 10 + 60 * j, 60, 60))
