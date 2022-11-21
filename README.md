@@ -42,3 +42,5 @@ en argument 'Board' et renvoyant la liste des positions
 sur le board où cette pièce peut atterrir. 
 
 ![alt text](https://github.com/[zaidang98]/[repostdlog]/blob/[uml]/uml_chess.drawio.png?raw=true)
+
+![Alt text](relative/path/to/uml_chess.drawio.png?raw=true "Title")
