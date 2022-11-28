@@ -1,6 +1,62 @@
+import pygame
 from model import *
 import config
 
+
+pygame.init()
+Screen1 = pygame.display.set_mode((500, 500))
+width = Screen1.get_width()
+height = Screen1.get_height()
+white = (255, 255, 255)
+Screen1.fill(white)
+smallfont = pygame.font.SysFont('Corbel',35)
+smallfont1 = pygame.font.SysFont('Corbel', 16)
+color = (0,0,0)
+text = smallfont.render('Choose play mode' , True , color)
+text1 = smallfont1.render('Player vs Player' , True , color)
+text2 = smallfont1.render('Player vs AI' , True , color)
+text3 = smallfont1.render('AI vs AI' , True , color)
+Screen1.blit(text, (width/4,height/4))
+Screen1.blit(text1, (50, 230))
+Screen1.blit(text2, (200, 230))
+Screen1.blit(text3, (350, 230))
+red = (200, 0, 0)
+green = (0, 200, 0)
+blue = (0, 0, 200)
+pygame.draw.rect(Screen1, green, (50, 250, 100, 50))
+pygame.draw.rect(Screen1, red, (200, 250, 100, 50))
+pygame.draw.rect(Screen1, blue, (350, 250, 100, 50))
+# Title and Icon
+pygame.display.set_caption("Chess")
+icon = pygame.image.load(config.LOGO)
+pygame.display.set_icon(icon)
+
+# Running
+running = True
+
+while running:
+
+    for event in pygame.event.get():
+        if event.type == pygame.QUIT:
+            running = False
+        if event.type == pygame.MOUSEBUTTONDOWN:
+                mouse = pygame.mouse.get_pos()
+                if 50 + 100 > mouse[0] > 50 and 250 + 50 > mouse[1] > 250:
+                    game_type = 0
+                    running = False
+                elif 200 + 100 > mouse[0] > 200 and 250 + 50 > mouse[1] > 250:
+                    game_type = 1
+                    running = False
+                elif 350 + 100 > mouse[0] > 350 and 250 + 50 > mouse[1] > 250:
+                    game_type = 2
+                    running = False
+                else:
+                    running = True
+
+
+    pygame.display.update()
+
+#####################################################################################################
 # Initialisation
 pygame.init()
 
@@ -13,19 +69,19 @@ pygame.display.set_caption("Chess")
 icon = pygame.image.load(config.LOGO)
 pygame.display.set_icon(icon)
 
-
 # Running
 running = True
 
 # Display
-game_type = int(input("Press 0 for 2 human players or 1 for a human player"
-                      + " and a computer player or 2 for 2 computer players"))
+#game_type = int(input("Press 0 for 2 human players or 1 for a human player"
+                      #+ " and a computer player or 2 for 2 computer players"))
 if game_type == 0:
     Game = Game(HumanPlayer(0), HumanPlayer(1))
 elif game_type == 1:
     Game = Game(HumanPlayer(0), ComputerPlayer(1))
 else:
     Game = Game(ComputerPlayer(0), ComputerPlayer(1))
+
 display_board(Screen, Game.board())
 Selected_piece = Piece(None)
 Highlighted_pieces = []
