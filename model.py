@@ -9,7 +9,7 @@ class Piece:
     - its color (0 for white, 1 for black, None if it belongs to no one or is dead)
     - its type (str)
     - its black and white images for display
-    - wether or not it has moved for castling rights and for pawns
+    - whether or not it has moved for castling rights and for pawns
     """
 
     def __init__(self, color):
@@ -67,7 +67,7 @@ class King(Piece):
                 if i != 0 or j != 0:
                     row = j0 + j
                     col = i0 + i
-                    if -1 < row < 8 and -1 < col < 8:
+                    if check(col, row, board, 1):
                         defend += [[col, row]]
         return defend
 
@@ -82,61 +82,9 @@ class Queen(Piece):
 
     def defend(self, board, i0, j0):
         defend = []
-        i = 1
-        while j0 + i < 8 and i0 + i < 8 and board[j0 + i][i0 + i].color() is None:
-            defend += [[i0 + i, j0 + i]]
-            i += 1
-        if j0 + i < 8 and i0 + i < 8:
-            defend += [[i0 + i, j0 + i]]
-
-        i = 1
-        while j0 - i > -1 and i0 - i > -1 and board[j0 - i][i0 - i].color() is None:
-            defend += [[i0 - i, j0 - i]]
-            i += 1
-        if j0 - i > -1 and i0 - i > -1:
-            defend += [[i0 - i, j0 - i]]
-
-        i = 1
-        while j0 - i > -1 and i0 + i < 8 and board[j0 - i][i0 + i].color() is None:
-            defend += [[i0 + i, j0 - i]]
-            i += 1
-        if j0 - i > -1 and i0 + i < 8:
-            defend += [[i0 + i, j0 - i]]
-
-        i = 1
-        while j0 + i < 8 and i0 - i > -1 and board[j0 + i][i0 - i].color() is None:
-            defend += [[i0 - i, j0 + i]]
-            i += 1
-        if j0 + i < 8 and i0 - i > -1:
-            defend += [[i0 - i, j0 + i]]
-
-        i = 1
-        while j0 + i < 8 and board[j0 + i][i0].color() is None:
-            defend += [[i0, j0 + i]]
-            i += 1
-        if j0 + i < 8:
-            defend += [[i0, j0 + i]]
-
-        i = 1
-        while j0 - i > -1 and board[j0 - i][i0].color() is None:
-            defend += [[i0, j0 - i]]
-            i += 1
-        if j0 - i > -1:
-            defend += [[i0, j0 - i]]
-
-        i = 1
-        while i0 + i < 8 and board[j0][i0 + i].color() is None:
-            defend += [[i0 + i, j0]]
-            i += 1
-        if i0 + i < 8:
-            defend += [[i0 + i, j0]]
-
-        i = 1
-        while i0 - i > -1 and board[j0][i0 - i].color() is None:
-            defend += [[i0 - i, j0]]
-            i += 1
-        if i0 - i > -1:
-            defend += [[i0 - i, j0]]
+        directions = [[-1, -1], [-1, 1], [1, -1], [1, 1], [-1, 0], [0, -1], [1, 0], [0, 1]]
+        for u in directions:
+            check_direction(u, i0, j0, board, defend)
 
         return defend
 
@@ -151,33 +99,9 @@ class Rook(Piece):
 
     def defend(self, board, i0, j0):
         defend = []
-        i = 1
-        while j0 + i < 8 and board[j0 + i][i0].color() is None:
-            defend += [[i0, j0 + i]]
-            i += 1
-        if j0 + i < 8:
-            defend += [[i0, j0 + i]]
-
-        i = 1
-        while j0 - i > -1 and board[j0 - i][i0].color() is None:
-            defend += [[i0, j0 - i]]
-            i += 1
-        if j0 - i > -1:
-            defend += [[i0, j0 - i]]
-
-        i = 1
-        while i0 + i < 8 and board[j0][i0 + i].color() is None:
-            defend += [[i0 + i, j0]]
-            i += 1
-        if i0 + i < 8:
-            defend += [[i0 + i, j0]]
-
-        i = 1
-        while i0 - i > -1 and board[j0][i0 - i].color() is None:
-            defend += [[i0 - i, j0]]
-            i += 1
-        if i0 - i > -1:
-            defend += [[i0 - i, j0]]
+        directions = [[-1, 0], [0, -1], [1, 0], [0, 1]]
+        for u in directions:
+            check_direction(u, i0, j0, board, defend)
 
         return defend
 
@@ -192,33 +116,9 @@ class Bishop(Piece):
 
     def defend(self, board, i0, j0):
         defend = []
-        i = 1
-        while j0 + i < 8 and i0 + i < 8 and board[j0 + i][i0 + i].color() is None:
-            defend += [[i0 + i, j0 + i]]
-            i += 1
-        if j0 + i < 8 and i0 + i < 8:
-            defend += [[i0 + i, j0 + i]]
-
-        i = 1
-        while j0 - i > -1 and i0 - i > -1 and board[j0 - i][i0 - i].color() is None:
-            defend += [[i0 - i, j0 - i]]
-            i += 1
-        if j0 - i > -1 and i0 - i > -1:
-            defend += [[i0 - i, j0 - i]]
-
-        i = 1
-        while j0 - i > -1 and i0 + i < 8 and board[j0 - i][i0 + i].color() is None:
-            defend += [[i0 + i, j0 - i]]
-            i += 1
-        if j0 - i > -1 and i0 + i < 8:
-            defend += [[i0 + i, j0 - i]]
-
-        i = 1
-        while j0 + i < 8 and i0 - i > -1 and board[j0 + i][i0 - i].color() is None:
-            defend += [[i0 - i, j0 + i]]
-            i += 1
-        if j0 + i < 8 and i0 - i > -1:
-            defend += [[i0 - i, j0 + i]]
+        directions = [[-1, -1], [-1, 1], [1, -1], [1, 1]]
+        for u in directions:
+            check_direction(u, i0, j0, board, defend)
 
         return defend
 
@@ -239,7 +139,7 @@ class Knight(Piece):
                 if (i + j) % 2 == 1:
                     row = j0 + j
                     col = i0 + i
-                    if -1 < row < 8 and -1 < col < 8:
+                    if check(col, row, board, 1):
                         defend += [[col, row]]
         return defend
 
@@ -261,7 +161,7 @@ class Pawn(Piece):
         for i in [-1, 1]:
             col = i0 + i
             row = j0 + j
-            if -1 < row < 8 and -1 < col < 8:
+            if check(col, row, board, 1):
                 defend += [[col, row]]
         return defend
 
@@ -648,3 +548,22 @@ def choose_piece(screen, board, turn, i, j):
         highlight(i, j, screen)
         return True
     return False
+
+
+def check(i, j, board, m):
+    """
+    Checks if (i,j) is on the board, and if m is equal to 0 checks if there is a piece on (i,j)
+    """
+    return -1 < i < 8 and -1 < j < 8 and (board[j][i].color() is None or m)
+
+
+def check_direction(u, i, j, board, defend):
+    """
+
+    """
+    k = 1
+    while check(i + k * u[0], j + k * u[1], board, 0):
+        defend += [[i + k * u[0], j + k * u[1]]]
+        k += 1
+    if check(i + k * u[0], j + k * u[1], board, 1):
+        defend += [[i + k * u[0], j + k * u[1]]]
