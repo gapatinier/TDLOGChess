@@ -41,5 +41,8 @@ La classe 'Piece' aura une méthode 'Moves' prenant
 en argument 'Board' et renvoyant la liste des positions
 sur le board où cette pièce peut atterrir. 
 
-
+## Diagramme de classes
 ![Alt text](uml_chess.drawio.png?raw=true "Diagramme de classes")
+
+## Schéma d'architecture
+![Alt_text](architecture.png?raw=true "Schéma d'architecture")
