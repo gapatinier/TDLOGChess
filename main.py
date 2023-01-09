@@ -177,7 +177,7 @@ while running:
                                 display_promotion(Game.promotion_col, Game.promotion_row, Game.turn, Screen)
                         elif Game.players[Game.turn].state == 1 \
                                 and choose_piece(Screen, Game.board, Game.turn, i0, j0):
-                            # PIECE RESELCTION
+                            # PIECE RESELECTION
                             for [i, j] in Highlighted_pieces:
                                 display_piece(Game.board, i, j, Screen)
                             Selected_piece = Game.board[j0][i0]
@@ -195,8 +195,20 @@ while running:
         elif Game.check_legal_move():
             print("STALE MATE")
             Screen.fill((255, 255, 255))
+            font = pygame.font.SysFont('Corbel', 35)
+            text = smallfont.render('STALEMATE !', True, black)
+            Screen.blit(text, (width / 4, height / 4))
         else:
             print("CHECK MATE")
-            Screen.fill((0, 0, 0))
+            if Game.turn == 0:
+                Screen.fill((255, 255, 255))
+                font = pygame.font.SysFont('Corbel', 35)
+                text = smallfont.render('Black has won !', True, black)
+                Screen.blit(text, (width / 4, height / 4))
+            else:
+                Screen.fill((0, 0, 0))
+                font = pygame.font.SysFont('Corbel', 35)
+                text = smallfont.render('White has won !', True, white)
+                Screen.blit(text, (width / 4, height / 4))
 
     pygame.display.update()
