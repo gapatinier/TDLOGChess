@@ -142,51 +142,64 @@ while running:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 mouse_presses = pygame.mouse.get_pressed()
                 if mouse_presses[0]:
-                    if Game.players()[Game.turn()].type() == 0:
+                    if Game.players[Game.turn].type == 0:
                         [x, y] = pygame.mouse.get_pos()
-                        [i0, j0] = [(x-10)//60, (y-10)//60]
-                        if Game.players()[Game.turn()].state() == 0 and choose_piece(Screen, Game.board(),
-                                                                                     Game.turn(), i0, j0):
+                        [i0, j0] = [(x - 10) // 60, (y - 10) // 60]
+                        if Game.promotion == 1:
+                            new_piece = promotion(Game.promotion_col, Game.promotion_row, i0, j0, Game.turn)
+                            if new_piece is not None:
+                                Game.set_board(new_piece, Game.promotion_col, Game.promotion_row)
+                                Game.promotion = 0
+                                display_board(Screen, Game.board)
+                                Game.turn = 1 - Game.turn
+                        elif Game.players[Game.turn].state == 0 and choose_piece(Screen, Game.board,
+                                                                               Game.turn, i0, j0):
                             # PIECE SELECTION
-                            Game.players()[Game.turn()].change_state()
-                            Selected_piece = Game.board()[j0][i0]
+                            Game.players[Game.turn].state = 1 - Game.players[Game.turn].state
+                            Selected_piece = Game.board[j0][i0]
                             Highlighted_pieces = [[i0, j0]]
                             for coords in Game.legal_moves(i0, j0):
                                 highlight(coords[0], coords[1], Screen)
                                 Highlighted_pieces.append(coords)
-                        elif Game.players()[Game.turn()].state() == 1 and Highlighted_pieces[0] == [i0, j0]:
+                        elif Game.players[Game.turn].state == 1 and Highlighted_pieces[0] == [i0, j0]:
                             # PIECE DESELECTION
-                            display_board(Screen, Game.board())
-                            Game.players()[Game.turn()].change_state()
-                        elif Game.players()[Game.turn()].state() == 1 and [i0, j0] in Highlighted_pieces:
+                            display_board(Screen, Game.board)
+                            Game.players[Game.turn].state = 1 - Game.players[Game.turn].state
+                        elif Game.players[Game.turn].state == 1 and [i0, j0] in Highlighted_pieces:
                             # MOVE SELECTION
                             [i1, j1] = Highlighted_pieces[0]
                             Highlighted_pieces = []
                             Game.move(i1, j1, i0, j0)
-                            Selected_piece = Pawn(None)
-                            Game.players()[Game.turn()].change_state()
-                            Game.next_turn()
-                            display_board(Screen, Game.board())
-                        elif Game.players()[Game.turn()].state() == 1\
-                                and choose_piece(Screen, Game.board(), Game.turn(), i0, j0):
+                            Selected_piece = Pawn(color=None, ptype=PieceType.Pawn, value=1)
+                            Game.players[Game.turn].state = 1 - Game.players[Game.turn].state
+                            if Game.promotion == 0:
+                                Game.turn = 1 - Game.turn
+                            display_board(Screen, Game.board)
+                            if Game.promotion == 1:
+                                display_promotion(Game.promotion_col, Game.promotion_row, Game.turn, Screen)
+                        elif Game.players[Game.turn].state == 1 \
+                                and choose_piece(Screen, Game.board, Game.turn, i0, j0):
                             # PIECE RESELCTION
                             for [i, j] in Highlighted_pieces:
-                                display_piece(Game.board(), i, j, Screen)
-                            Selected_piece = Game.board()[j0][i0]
+                                display_piece(Game.board, i, j, Screen)
+                            Selected_piece = Game.board[j0][i0]
                             Highlighted_pieces = [[i0, j0]]
                             for coords in Game.legal_moves(i0, j0):
                                 highlight(coords[0], coords[1], Screen)
                                 Highlighted_pieces.append(coords)
 
                     else:
-                        [i, j, i0, j0] = Game.players()[Game.turn()].play_smart_move_v1(Game)
+                        [i, j, i0, j0] = Game.players[Game.turn].play_smart_move_v1(Game)
                         Game.move(i0, j0, i, j)
-                        Game.next_turn()
-                        display_board(Screen, Game.board())
+                        Game.turn = 1 - Game.turn
+                        display_board(Screen, Game.board)
+
+
         elif Game.check_legal_move():
             print("STALE MATE")
             Screen.fill((255, 255, 255))
         else:
+            print("CHECK MATE")
             Screen.fill((0, 0, 0))
 
     pygame.display.update()
