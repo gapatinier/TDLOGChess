@@ -428,15 +428,6 @@ class ComputerPlayer(Player):
         return [i, j, self.coords[k][0], self.coords[k][1]]
 
 
-# Colors
-Color = [(173, 216, 230), (0, 0, 255)]
-
-s = pygame.Surface((60, 60))
-s.set_alpha(128)
-s.fill((255, 0, 0))
-[i1, j1] = [0, 0]
-
-
 # Display functions
 
 
