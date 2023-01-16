@@ -41,3 +41,19 @@ Board[7] = [Rook(color=color), Knight(color=color), Bishop(color=color), Queen(c
             King(color=color), Bishop(color=color), Knight(color=color), Rook(color=color)]
 Board[6] = [Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color),
             Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color)]
+
+
+pieces_init = [[], []]
+coords_init = [[], []]
+for color in range(2):
+    pieces_init[color] = [Rook(color=color), Rook(color=color), Knight(color=color), Knight(color=color),
+                          Bishop(color=color), Bishop(color=color), Queen(color=color),
+                          King(color=color),
+                          Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color),
+                          Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color)]
+    coords_init[color] = [[0, 7 * (1 - color)], [7, 7 * (1 - color)], [1, 7 * (1 - color)], [6, 7 * (1 - color)],
+                          [2, 7 * (1 - color)], [5, 7 * (1 - color)], [3, 7 * (1 - color)], [4, 7 * (1 - color)],
+                          [0, 5 * (1 - color) + 1], [1, 5 * (1 - color) + 1], [2, 5 * (1 - color) + 1],
+                          [3, 5 * (1 - color) + 1],
+                          [4, 5 * (1 - color) + 1], [5, 5 * (1 - color) + 1], [6, 5 * (1 - color) + 1],
+                          [7, 5 * (1 - color) + 1]]
