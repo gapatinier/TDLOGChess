@@ -56,4 +56,12 @@ for color in range(2):
                           [0, 5 * (1 - color) + 1], [1, 5 * (1 - color) + 1], [2, 5 * (1 - color) + 1],
                           [3, 5 * (1 - color) + 1],
                           [4, 5 * (1 - color) + 1], [5, 5 * (1 - color) + 1], [6, 5 * (1 - color) + 1],
-                          [7, 5 * (1 - color) + 1]]
+                          [7, 5 * (1 - color) + 1]] 
+
+# Colors
+Color = [(173, 216, 230), (0, 0, 255)]
+
+s = pygame.Surface((60, 60))
+s.set_alpha(128)
+s.fill((255, 0, 0))
+[i1, j1] = [0, 0]
