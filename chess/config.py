@@ -1,4 +1,5 @@
 from pathlib import Path
+import model
 
 p = Path("./images")
 
@@ -16,3 +17,27 @@ WHITE_QUEEN = p.joinpath("wqueen.png")
 WHITE_ROOK = p.joinpath("wrook.png")
 
 LOGO = p.joinpath("strategy.png")
+
+
+Board = [[Piece(color=None, ptype=PieceType.Pawn, value=0) for _ in range(8)] for _ in range(8)]
+color = 1
+Player_pieces = [[Rook(color=0), Rook(color=0), Knight(color=0), Knight(color=0),
+                  Bishop(color=0), Bishop(color=0), Queen(color=0),
+                  King(color=0),
+                  Pawn(color=0), Pawn(color=0), Pawn(color=0), Pawn(color=0),
+                  Pawn(color=0), Pawn(color=0), Pawn(color=0), Pawn(color=0)],
+                 [Rook(color=1), Rook(color=1), Knight(color=1), Knight(color=1),
+                  Bishop(color=1), Bishop(color=1), Queen(color=1),
+                  King(color=1),
+                  Pawn(color=1), Pawn(color=1), Pawn(color=1), Pawn(color=1),
+                  Pawn(color=1), Pawn(color=1), Pawn(color=1), Pawn(color=1)]
+                 ]
+Board[0] = [Rook(color=color), Knight(color=color), Bishop(color=color), Queen(color=color),
+            King(color=color), Bishop(color=color), Knight(color=color), Rook(color=color)]
+Board[1] = [Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color),
+            Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color)]
+color = 0
+Board[7] = [Rook(color=color), Knight(color=color), Bishop(color=color), Queen(color=color),
+            King(color=color), Bishop(color=color), Knight(color=color), Rook(color=color)]
+Board[6] = [Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color),
+            Pawn(color=color), Pawn(color=color), Pawn(color=color), Pawn(color=color)]
