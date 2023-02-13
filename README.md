@@ -33,16 +33,6 @@ HumanPlayer et ComputerPlayer.
 
 La classe 'Game' se chargera de commencer une partie.
 
-## Création des méthodes
-
-Après avoir créé les différentes classes, on peut
-introduire les méthodes qui permettront de modéliser
-le jeu.
-
-La classe 'Piece' aura une méthode 'Moves' prenant
-en argument 'Board' et renvoyant la liste des positions
-sur le board où cette pièce peut atterrir. 
-
 ## Diagramme de classes
 ![Alt text](images/uml_chess.drawio.png?raw=true "Diagramme de classes")
 
