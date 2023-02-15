@@ -138,7 +138,7 @@ class Pawn(Piece):
                 defend += [[col, row]]
         return defend
 
-
+import config2
 @dataclass(kw_only=True)
 class Game:
     """
@@ -150,7 +150,7 @@ class Game:
     """
 
     turn: int = 0
-    board: list = field(default_factory=lambda: Board)
+    board: list = field(default_factory=lambda: config2.Board)
     players: list = field(default_factory=lambda: [])
     en_passant: list = field(default_factory=lambda: [0, -1])
     promotion: int = 0
@@ -185,9 +185,9 @@ class Game:
                 moves.append([i0, j0 + k])
                 if not board[j0][i0].moved and board[j0 + 2 * k][i0].color is None:
                     moves.append([i0, j0 + 2 * k])
-            if self.en_passant[0] and j0 == 3 + 4 * color and (
+            if self.en_passant[0] and j0 == 3 + 4 * colour and (
                     i0 == self.en_passant[1] - 1 or i0 == self.en_passant[1] + 1):
-                moves.append([self.en_passant[1], 2 + 5 * color])
+                moves.append([self.en_passant[1], 2 + 5 * colour])
                 self.en_passant[0] += 1
 
         return moves
@@ -266,7 +266,7 @@ class Game:
                 player1.update_type(i, j, Queen(color=colour))
         if piece.ptype == PieceType.King and [i, j] == [1, 7 * (1 - colour)] and not moved:
             player1.update_piece(0, 7 * (1 - colour), 2, 7 * (1 - colour))
-            self.set_board(Pawn(color=None, ptype=PieceType.Pawn, value=1), 0, 7 * (1 - color))
+            self.set_board(Pawn(color=None, ptype=PieceType.Pawn, value=1), 0, 7 * (1 - colour))
             self.set_board(Rook(color=colour), 2, 7 * (1 - colour))
         if piece.ptype == PieceType.King and [i, j] == [6, 7 * (1 - colour)] and not moved:
             player1.update_piece(7, 7 * (1 - colour), 5, 7 * (1 - colour))
@@ -435,7 +435,7 @@ def highlight(i, j, screen):
     """
     Highlights the piece on the board using its coordinates
     """
-    screen.blit(s, (10 + i * 60, 10 + j * 60))
+    screen.blit(config2.s, (10 + i * 60, 10 + j * 60))
 
 
 def display_piece(board, i, j, screen):
@@ -443,7 +443,7 @@ def display_piece(board, i, j, screen):
     Displays a piece on the board using its coordinates and its color
     """
     piece = board[j][i]
-    screen.fill(Color[1 - (i + j) % 2], (10 + 60 * i, 10 + 60 * j, 60, 60))
+    screen.fill(config2.Color[1 - (i + j) % 2], (10 + 60 * i, 10 + 60 * j, 60, 60))
     if piece.color is None:
         return
     screen.blit(pygame.image.load(config.p.joinpath(piece.images[piece.color])), (10 + i * 60, 10 + j * 60))

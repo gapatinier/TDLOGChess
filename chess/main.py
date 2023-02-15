@@ -1,6 +1,7 @@
 import pygame
 from model import *
 import config
+import config2
 
 # Menu page
 
@@ -118,14 +119,14 @@ running = True
 # Display
 
 if game_type == 0:
-    Game = Game(players=[HumanPlayer(color=0, pieces=pieces_init[0], coords=coords_init[0]), HumanPlayer(color=1, pieces=pieces_init[1], coords=coords_init[1])])
+    Game = Game(players=[HumanPlayer(color=0, pieces=config2.pieces_init[0], coords=config2.coords_init[0]), HumanPlayer(color=1, pieces=config2.pieces_init[1], coords=config2.coords_init[1])])
 elif game_type == 1:
     if chosen_color == 0:
-        Game = Game(players=[HumanPlayer(color=0, pieces=pieces_init[0], coords=coords_init[0]), ComputerPlayer(color=1, pieces=pieces_init[1], coords=coords_init[1])])
+        Game = Game(players=[HumanPlayer(color=0, pieces=config2.pieces_init[0], coords=config2.coords_init[0]), ComputerPlayer(color=1, pieces=config2.pieces_init[1], coords=config2.coords_init[1])])
     else:
-        Game = Game(players=[ComputerPlayer(color=1, pieces=pieces_init[1], coords=coords_init[1]), HumanPlayer(color=0, pieces=pieces_init[0], coords=coords_init[0])])
+        Game = Game(players=[ComputerPlayer(color=1, pieces=config2.pieces_init[1], coords=config2.coords_init[1]), HumanPlayer(color=0, pieces=config2.pieces_init[0], coords=config2.coords_init[0])])
 else:
-    Game = Game(players=[ComputerPlayer(color=0, pieces=pieces_init[0], coords=coords_init[0]), ComputerPlayer(color=1, pieces=pieces_init[1], coords=coords_init[1])])
+    Game = Game(players=[ComputerPlayer(color=0, pieces=config2.pieces_init[0], coords=config2.coords_init[0]), ComputerPlayer(color=1, pieces=config2.pieces_init[1], coords=config2.coords_init[1])])
 
 display_board(Screen, Game.board)
 Selected_piece = Piece(color=None, ptype=PieceType.Pawn, value=0)
