@@ -7,6 +7,8 @@ consistera à programmer une interface graphique. Ensuite,
 on pourra envisager de créer une IA ou de permettre le
 jeu multijoueurs en réseau.
 
+Pour touner le jeu, exécutez le fichier main.py dans le dossier chess.
+
 Les objectifs pour la fin du projet seront de nettoyer et factoriser le code, créer un diagramme d’architecture, ajouter certaines fonctionnalités au jeu (ajouter la promotion du pion) et d’ajouter des boutons afin que l’interface graphique soit plus agréable pour le ou les joueurs.
 
 ## Création des différentes classes
@@ -32,16 +34,6 @@ des pièces de ce joueur. Il aura deux sous-classes
 HumanPlayer et ComputerPlayer.
 
 La classe 'Game' se chargera de commencer une partie.
-
-## Création des méthodes
-
-Après avoir créé les différentes classes, on peut
-introduire les méthodes qui permettront de modéliser
-le jeu.
-
-La classe 'Piece' aura une méthode 'Moves' prenant
-en argument 'Board' et renvoyant la liste des positions
-sur le board où cette pièce peut atterrir. 
 
 ## Diagramme de classes
 ![Alt text](images/uml_chess.drawio.png?raw=true "Diagramme de classes")
